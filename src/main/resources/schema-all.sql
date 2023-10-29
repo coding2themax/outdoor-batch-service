@@ -1,7 +1,8 @@
-DROP TABLE people IF EXISTS;
+DROP TABLE park IF EXISTS;
 
-CREATE TABLE people  (
-    person_id BIGINT IDENTITY NOT NULL PRIMARY KEY,
-    first_name VARCHAR(20),
-    last_name VARCHAR(20)
-);
+CREATE TABLE park (parkCode varchar(80) PRIMARY KEY,  url VARCHAR(255), fullName VARCHAR(255), description VARCHAR(255) );
+
+CREATE TABLE usstate(id varchar(2) PRIMARY KEY, fullName varchar(80));
+
+CREATE TABLE statepark( id varchar(2) references usstate(id), parkCode VARCHAR(80) references park(parkCode));
+

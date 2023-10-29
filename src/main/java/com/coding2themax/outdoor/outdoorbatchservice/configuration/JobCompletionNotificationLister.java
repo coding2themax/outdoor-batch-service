@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import com.coding2themax.outdoor.outdoorbatchservice.batchprocessing.Person;
+import com.coding2themax.outdoor.outdoorbatchservice.model.USState;
 
 @Component
 public class JobCompletionNotificationLister implements JobExecutionListener {
@@ -28,8 +28,8 @@ public class JobCompletionNotificationLister implements JobExecutionListener {
       log.info("!!! JOB FINISHED! Time to verify the results");
 
       jdbcTemplate
-          .query("SELECT first_name, last_name FROM people", new DataClassRowMapper<>(Person.class))
-          .forEach(person -> log.info("Found <{{}}> in the database.", person));
+          .query("SELECT id, fullname FROM usstate", new DataClassRowMapper<>(USState.class))
+          .forEach(USState -> log.info("Found <{{}}> in the database.", USState));
     }
   }
 

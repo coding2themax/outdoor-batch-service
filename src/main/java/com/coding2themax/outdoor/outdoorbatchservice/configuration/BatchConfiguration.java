@@ -16,33 +16,27 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
-import com.coding2themax.outdoor.outdoorbatchservice.batchprocessing.Person;
-import com.coding2themax.outdoor.outdoorbatchservice.batchprocessing.PersonItemProcessor;
+import com.coding2themax.outdoor.outdoorbatchservice.model.USState;
 
 @Configuration
 public class BatchConfiguration {
 
   @Bean
-  public FlatFileItemReader<Person> reader() {
+  public FlatFileItemReader<USState> stateReader() {
 
-    return new FlatFileItemReaderBuilder<Person>().name(
-        "personItemReader").resource(new ClassPathResource("sample-data.csv"))
+    return new FlatFileItemReaderBuilder<USState>().name(
+        "personItemReader").resource(new ClassPathResource("state.csv"))
         .delimited()
-        .names("firstName", "lastName")
-        .targetType(Person.class)
+        .names("id", "fullname")
+        .targetType(USState.class)
         .build();
 
   }
 
   @Bean
-  public PersonItemProcessor processor() {
-    return new PersonItemProcessor();
-  }
-
-  @Bean
-  public JdbcBatchItemWriter<Person> writer(DataSource dataSource) {
-    return new JdbcBatchItemWriterBuilder<Person>()
-        .sql("INSERT INTO people (first_name, last_name) VALUES (:firstName, :lastName)")
+  public JdbcBatchItemWriter<USState> writer(DataSource dataSource) {
+    return new JdbcBatchItemWriterBuilder<USState>()
+        .sql("INSERT INTO usstate (id, fullname) VALUES (:id, :fullname)")
         .dataSource(dataSource)
         .beanMapped()
         .build();
@@ -56,11 +50,10 @@ public class BatchConfiguration {
 
   @Bean
   public Step step1(JobRepository jobRepository, DataSourceTransactionManager transactionManager,
-      FlatFileItemReader<Person> reader, PersonItemProcessor processor, JdbcBatchItemWriter<Person> writer) {
+      FlatFileItemReader<USState> stateReader, JdbcBatchItemWriter<USState> writer) {
     return new StepBuilder("step1", jobRepository)
-        .<Person, Person>chunk(3, transactionManager)
-        .reader(reader)
-        .processor(processor)
+        .<USState, USState>chunk(3, transactionManager)
+        .reader(stateReader)
         .writer(writer)
         .build();
   }
