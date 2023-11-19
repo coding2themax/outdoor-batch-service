@@ -11,11 +11,15 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.json.JacksonJsonObjectReader;
+import org.springframework.batch.item.json.JsonItemReader;
+import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
+import com.coding2themax.outdoor.outdoorbatchservice.model.Park;
 import com.coding2themax.outdoor.outdoorbatchservice.model.USState;
 
 @Configuration
@@ -31,6 +35,15 @@ public class BatchConfiguration {
         .targetType(USState.class)
         .build();
 
+  }
+
+  @Bean
+  public JsonItemReader<Park> jsonParkItemReader() {
+
+    return new JsonItemReaderBuilder<Park>().jsonObjectReader(new JacksonJsonObjectReader<>(Park.class))
+        .resource(new ClassPathResource("park.json"))
+        .name("parkJsonItemReader")
+        .build();
   }
 
   @Bean
